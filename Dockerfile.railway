@@ -57,15 +57,30 @@ COPY nginx.conf /etc/nginx/sites-available/default
 RUN ln -sf /dev/stdout /var/log/nginx/access.log \
     && ln -sf /dev/stderr /var/log/nginx/error.log
 
-# Create entrypoint script
+# Create a more robust entrypoint script
 RUN echo '#!/bin/bash\n\
+set -e\n\
+\n\
+# Generate app key if not set\n\
+php artisan key:generate --force\n\
+\n\
+# Run database migrations\n\
 php artisan migrate --force\n\
-php artisan storage:link\n\
+\n\
+# Create storage link\n\
+php artisan storage:link || true\n\
+\n\
+# Cache configuration and routes\n\
 php artisan config:cache\n\
 php artisan route:cache\n\
 php artisan view:cache\n\
+\n\
+# Start Nginx service\n\
 service nginx start\n\
-php-fpm\n' > /entrypoint.sh
+\n\
+# Start PHP-FPM\n\
+exec php-fpm\n\
+' > /entrypoint.sh
 
 RUN chmod +x /entrypoint.sh
 

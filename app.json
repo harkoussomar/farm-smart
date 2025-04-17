@@ -1,0 +1,35 @@
+{
+    "name": "Farm Smart Backend",
+    "description": "Laravel backend for Farm Smart application",
+    "keywords": ["laravel", "php", "farm", "agriculture"],
+    "website": "https://farm-smart.netlify.app/",
+    "repository": "https://github.com/harkoussomar/farm-smart",
+    "env": {
+        "APP_NAME": {
+            "value": "FarmSmart"
+        },
+        "APP_ENV": {
+            "value": "production"
+        },
+        "APP_DEBUG": {
+            "value": "false"
+        },
+        "LOG_CHANNEL": {
+            "value": "stderr"
+        },
+        "DB_CONNECTION": {
+            "value": "sqlite"
+        }
+    },
+    "buildpacks": [
+        {
+            "url": "heroku/php"
+        },
+        {
+            "url": "heroku/nodejs"
+        }
+    ],
+    "scripts": {
+        "postdeploy": "php artisan migrate --force && php artisan storage:link"
+    }
+}
